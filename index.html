@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Steve's Present Simple Adventure</title>
+  <style>
+    body {
+      background-color: #b6f7b2;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .location {
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .location-title {
+      cursor: pointer;
+      background-color: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+      transition: background-color 0.3s ease;
+    }
+    .location-title:hover {
+      background-color: #e0ffd6;
+    }
+    .question-block {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 15px;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+      display: none;
+    }
+    .question-block input[type="text"] {
+      padding: 5px;
+      margin-top: 5px;
+    }
+    .block-reward {
+      color: green;
+      font-weight: bold;
+    }
+    #steve {
+      width: 100px;
+      height: auto;
+      animation: walk 1s steps(2) infinite;
+    }
+    @keyframes walk {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(20px); }
+    }
+    .wrong-answer {
+      border: 2px solid red;
+      background-color: #ffe6e6;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <img id="steve" src="https://static.wixstatic.com/media/7f49d9_187991e324e74256a2e1605b78c827fd~mv2.gif" alt="Steve">
+
+    <!-- Forest Location -->
+    <div class="location">
+      <h2 class="location-title" onclick="showLocation(1)">🌲 Forest - Affirmative Sentences</h2>
+      <div class="question-block" id="block1">
+        <p>1. Steve <input type="text" id="q1"> (like) diamonds.</p>
+        <p>2. He <input type="text" id="q2"> (build) a house every day.</p>
+        <p>3. Zombies <input type="text" id="q3"> (appear) at night.</p>
+        <p>4. A creeper <input type="text" id="q4"> (explode) quickly.</p>
+        <p>5. Players <input type="text" id="q5"> (mine) blocks.</p>
+        <button onclick="checkAnswers(1, ['likes','builds','appear','explodes','mine'])">Check Answers</button>
+        <p id="result1" class="block-reward"></p>
+      </div>
+    </div>
+
+    <!-- Cave Location -->
+    <div class="location">
+      <h2 class="location-title" onclick="showLocation(2)">💎 Cave - Negative Sentences</h2>
+      <div class="question-block" id="block2">
+        <p>1. Steve <input type="text" id="q6"> (not eat) cake in caves.</p>
+        <p>2. Creepers <input type="text" id="q7"> (not like) cats.</p>
+        <p>3. He <input type="text" id="q8"> (not dig) straight down.</p>
+        <p>4. Spiders <input type="text" id="q9"> (not come) during the day.</p>
+        <p>5. Alex <input type="text" id="q10"> (not collect) dirt blocks.</p>
+        <button onclick="checkAnswers(2, ['does not eat','do not like','does not dig','do not come','does not collect'])">Check Answers</button>
+        <p id="result2" class="block-reward"></p>
+      </div>
+    </div>
+
+    <!-- Island Location -->
+    <div class="location">
+      <h2 class="location-title" onclick="showLocation(3)">🏝 Island - Yes/No Questions & Short Answers</h2>
+      <div class="question-block" id="block3">
+        <p>1. <input type="text" id="q11"> Steve like fish? Yes, he <input type="text" id="q12">.</p>
+        <p>2. <input type="text" id="q13"> zombies burn in sunlight? Yes, they <input type="text" id="q14">.</p>
+        <p>3. <input type="text" id="q15"> she build with sand? No, she doesn't.</p>
+        <p>4. <input type="text" id="q16"> villagers trade emeralds? Yes, they do.</p>
+        <p>5. <input type="text" id="q17"> it snow in the desert? No, it doesn't.</p>
+        <button onclick="checkAnswers(3, ['Does','does','Do','do','Does','Do','Does'])">Check Answers</button>
+        <p id="result3" class="block-reward"></p>
+      </div>
+    </div>
+
+    <!-- Speaking Challenge -->
+    <div class="location">
+      <h2 class="location-title" onclick="showLocation(4)">🗣 Temple - Speaking Time!</h2>
+      <div class="question-block" id="block4">
+        <p>🎤 Say aloud (or record):</p>
+        <ul>
+          <li>What does Steve do in the morning?</li>
+          <li>Does Steve like lava?</li>
+          <li>What do players do in the village?</li>
+          <li>Do you play Minecraft? What do you do there?</li>
+        </ul>
+        <p>💎 +1 emerald for each full sentence you say!</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showLocation(id) {
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById('block' + i).style.display = 'none';
+      }
+      document.getElementById('block' + id).style.display = 'block';
+    }
+
+    function checkAnswers(loc, correctAnswers) {
+      let points = 0;
+      let base = (loc - 1) * 5 + 1;
+      for (let i = 0; i < 5; i++) {
+        let inputEl = document.getElementById('q' + (base + i));
+        let userAnswer = inputEl.value.trim().toLowerCase();
+        let correct = correctAnswers[i].toLowerCase();
+        if (userAnswer === correct) {
+          points++;
+          inputEl.classList.remove('wrong-answer');
+        } else {
+          inputEl.classList.add('wrong-answer');
+        }
+      }
+      document.getElementById('result' + loc).innerText = `✅ You earned ${points} emerald block(s)!`;
+
+      if (points === 5 && loc < 4) {
+        setTimeout(() => {
+          showLocation(loc + 1);
+          alert("Great job! Let's move to the next challenge!");
+        }, 1000);
+      }
+    }
+  </script>
+</body>
+</html>
